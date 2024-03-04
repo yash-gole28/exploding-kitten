@@ -5,6 +5,8 @@
   margin: 50px;
   justify-content: center;
   align-items: center;
+  z-index: 1;
+  position: relative;
   
 }
 
@@ -12,4 +14,19 @@
   display: flex;
   flex-wrap: wrap;
   margin: 100px;
+}
+.pop{
+  scale: 0;
+}
+.card:active .pop{
+  background-color: rgb(167, 244, 218);
+  display:flex;
+  scale: 1;
+  position:absolute;
+  width: 200px;
+  height: 300px;
+  border: 1px solid red;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
 }

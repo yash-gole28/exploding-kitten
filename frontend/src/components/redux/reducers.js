@@ -1,8 +1,7 @@
 const initialState = {
-    deck: ['Cat', 'Cat', 'Defuse', 'Exploding Kitten', 'Shuffle'],
-    username: "dlsfkjslkfjsl",
-    isStarted: false,
-    defuseCard: 0
+    deck: ['Cat', 'Cat','Cat','Cat', 'Cat', 'Defuse', 'Exploding Kitten','Exploding Kitten', 'Shuffle'],
+    username: "Yash Gole",
+    defuseCard: 0,
 }
 
 function shuffleArray(array) {
@@ -25,19 +24,34 @@ function shuffleArray(array) {
 const stateReducer = (state = initialState, action) => {
     switch (action.type) {
         case "SHUFFLE":
-            // Shuffle the deck array
+            
             const shuffledDeck = shuffleArray(state.deck);
             return { ...state, deck: shuffledDeck };
 
         case 'START_GAME':
+            const shuffleDeck = shuffleArray(['Cat', 'Cat', 'Cat', 'Cat', 'Cat', 'Defuse', 'Exploding Kitten','Exploding Kitten', 'Shuffle']);
             return {
                 ...state,
-                deck: ['Cat', 'Cat', 'Defuse', 'Exploding Kitten', 'Shuffle'],
+                deck: shuffleDeck,
                 isStarted: true,
+                defuseCard: 0
             };
 
         case 'ADD_DEFUSE_CARD':
-            return { ...state, defuseCard: state.defuseCard + 1 }
+            
+            const defuseIndex = state.deck.indexOf('Defuse');
+            if (defuseIndex !== -1) {
+                const updatedDeck = [...state.deck.slice(0, defuseIndex), ...state.deck.slice(defuseIndex + 1)];
+                return {
+                    ...state,
+                    defuseCard: state.defuseCard + 1, 
+                    deck: updatedDeck 
+                };
+            }
+            return state;
+
+        case 'REMOVE_DEFUSE_CARD':
+            return { ...state, defuseCard: state.defuseCard - 1 }
 
         case 'USE_DEFUSE_CARD':
 
@@ -48,34 +62,24 @@ const stateReducer = (state = initialState, action) => {
 
             return state;
 
+        case 'REMOVE_CAT_CARD':
+            const catIndex = state.deck.indexOf('Cat');
+            const updatedDeck = [
+                ...state.deck.slice(0, catIndex),
+                ...state.deck.slice(catIndex + 1)
+            ];
+            const isCatRemaining = updatedDeck.includes('Cat');
+            if (!isCatRemaining) {
+                alert('You won!');
 
+            }
 
-            case 'REMOVE_CAT_CARD':
-                // Find the index of the first "Cat" card in the deck array
-                const catIndex = state.deck.indexOf('Cat');
-                
-                // Create a new deck array without the first "Cat" card
-                const updatedDeck = [
-                    ...state.deck.slice(0, catIndex),
-                    ...state.deck.slice(catIndex + 1)
-                ];
-    
-                // Check if there are no more "Cat" cards remaining
-                const isCatRemaining = updatedDeck.includes('Cat');
-    
-                // If no "Cat" cards are remaining, declare the game as won
-                if (!isCatRemaining) {
-                    alert('You won!');
-                    // Handle any additional game-winning logic
-                }
-    
-                // Return the new state object with the updated deck array
-                return { ...state, deck: updatedDeck };
+            return { ...state, deck: updatedDeck };
 
         default:
             return state;
     }
 };
-            
+
 
 export default stateReducer
