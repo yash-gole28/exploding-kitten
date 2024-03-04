@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import './App.css';
 import Navbar from './components/Navbar';
+import { shuffleDeck, startGame, drawCard, removeCatCard } from './components/redux/actions'; // Import Redux actions
 
 function shuffleArray(array) {
-  // This function shuffles the array using Fisher-Yates algorithm
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
@@ -13,40 +13,47 @@ function shuffleArray(array) {
 }
 
 function App() {
+  const dispatch = useDispatch();
   const deckState = useSelector((state) => state.state.username);
-  const initialCards = useSelector((state) => state.state.deck);
-  const [cards, setCards] = useState(initialCards);
+  let initialCards = useSelector((state) => state.state.deck);
+  // const isStarted = useSelector((state) => state.state.isStarted); // Check if the game has started
+  const [cards, setCards] = useState(initialCards); // Use local state to store cards
 
-  const setCardsAndCheckWinCondition = (updatedCards) => {
-    // Update the cards array
-    setCards(updatedCards);
-  
-    // Check if there are no more "Cat" cards left
-    if (!updatedCards.some((card) => card === "Cat")) {
-      alert("You won");
-      // Reset the game or handle game won
-    }
-  };
+  // useEffect to shuffle the deck and start the game when component mounts
 
-  const handleShuffle = () => {
-    // Shuffle the cards array
-    const shuffledCards = shuffleArray([...cards]);
-    setCards(shuffledCards);
-  };
 
-  const checkCard = (index) => {
-    if (cards[index] === "Exploding Kitten") {
+  // Function to handle card click
+  const handleCardClick = (index) => {
+    const card = cards[index];
+    if (card === "Exploding Kitten") {
       alert("You lose");
-      // Reset the game or handle game over
-    } else if (cards[index] === "Shuffle") {
-      handleShuffle();
-    } else if (cards[index] === "Cat") {
-      // Remove the Cat card from the array
-      const updatedCards = cards.filter((_, i) => i !== index);
-      setCardsAndCheckWinCondition(updatedCards);
+    } else if (card === "Shuffle") {
+      dispatch(shuffleDeck());
+    } else if (card === "Cat") {
+      dispatch(removeCatCard(index)); // Dispatch action to remove Cat card
+    } else if (card === 'Defuse') {
+      // Handle Defuse logic
     }
+    // else {
+    //   dispatch(drawCard(index)); // Dispatch action to draw card
+    // }
   };
-  
+
+  // Function to handle "Start Game" button click
+  const handleStartGame = () => {
+    dispatch(shuffleDeck()); // Shuffle the deck
+    dispatch(startGame()); // Start the game
+  };
+
+  useEffect(() => {
+    dispatch(shuffleDeck());
+    dispatch(startGame());
+  }, []);
+
+  // Update local state when initialCards change
+  useEffect(() => {
+    setCards(initialCards);
+  }, [initialCards]);
 
   return (
     <div className="App">
@@ -54,15 +61,20 @@ function App() {
       <div>
         <h1>states : {deckState}</h1>
       </div>
-      <div>
-        {/* Map over the cards array */}
+      <div className='cards-container'>
+        {/* Render the "Start Game" button */}
+
+        {/* Map over the cards array and display each card */}
         {cards.map((card, index) => (
-          <div onClick={() => checkCard(index)} key={index}>
-            {card}
+          <div className='card' onClick={() => handleCardClick(index)} key={index}>
+            {card} {/* Display the value of the card */}
           </div>
         ))}
+
       </div>
-      {/* <button onClick={handleShuffle}>Shuffle</button> */}
+       {/* {!isStarted && ( */}
+       <button onClick={handleStartGame}>Start Game</button>
+        {/* )} */}
     </div>
   );
 }
