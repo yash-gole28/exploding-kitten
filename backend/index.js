@@ -4,7 +4,6 @@ import morgan from 'morgan'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import router from './Routes/index.js'
-// import router from './Routes/index.js'
 
 const app = express()
 app.use(cors())

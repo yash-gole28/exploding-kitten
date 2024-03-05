@@ -1,25 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-// import Navbar from './components/Navbar';
 import { shuffleDeck, startGame, drawCard, removeCatCard, defuse, DefuseCard } from './redux/actions'; // Import Redux actions
 import Navbar from './Navbar';
+import { AuthContext } from './context/AuthContext';
 
 const Game = () => {
+    const {state ,start , setStart,Logout} = useContext(AuthContext)
     const dispatch = useDispatch();
-    const deckState = useSelector((state) => state.state.username);
+   
     let initialCards = useSelector((state) => state.state.deck);
     const defuseCard = useSelector((state) => state.state.defuseCard)
     const [cards, setCards] = useState(initialCards); 
-    // const [toggleClick , setToggleClick] = useState(false)
+    const [gamesWon , setGamesWon] = useState(0)
+    // const [start , setStart] = useState(false)
   
-  
-    // Function to handle card click
     const handleCardClick = (index) => {
       const card = cards[index];
       if (card === "Exploding Kitten") {
         if(defuseCard !== 0){
           dispatch(DefuseCard())
         }else{
+          dispatch(startGame())
+          setStart(false)
           alert("you lost")
         }
       } else if (card === "Shuffle") {
@@ -33,12 +35,15 @@ const Game = () => {
         dispatch(drawCard(index)); 
       }
     };
-  
-    
-    useEffect(() => {
-      dispatch(shuffleDeck());
-      dispatch(startGame());
-    }, []);
+
+    useEffect(()=>{
+      if(state?.user){
+        const gameswon =  JSON.parse(localStorage.getItem("game-data"))
+      setGamesWon(gameswon.won)
+      }
+    },[state])
+
+
   
   
     useEffect(() => {
@@ -48,25 +53,37 @@ const Game = () => {
     return (
       <div className="App">
         <Navbar />
+    
         <div>
-          <h1>UserName : {deckState}</h1>
+          <h1>UserName : {state?.user?.name}</h1>
           <div>
             <h2>DefuseCard Count: {defuseCard}</h2>
-            <h3>Games Won : {} </h3>
+            <h3>Games Won : {state?.user ? gamesWon : "Login to record your winnings"} </h3>
           </div>
-        </div>
-        <div className='cards-container'>
   
-          {initialCards.map((card, index) => (
+       <div className='start-container'>
+       {/* <button className='start-btn' >Start Game</button> */}
+       <button type="button" className="btn btn-primary" onClick={()=>{dispatch(startGame());setStart((value)=>!value)}} >Start Game</button>
+       </div>
+        </div>
+        <div >
+          {
+            start ? <div className='cards-container'>
+               {initialCards.map((card, index) => (
             <div className='card'  onClick={() => handleCardClick(index)} key={index}>
               card 
               <div className='pop'>{card}</div>
             </div>
           ))}
+            </div>:
+            <div className='before-start'>
+              <h1>start the game</h1>
+            </div>
+          }
+         
         </div>
        
-          <button onClick={()=>{dispatch(startGame())}}>Start Game</button>
-    
+         
       </div>
     );
 }
