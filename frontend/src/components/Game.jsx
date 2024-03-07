@@ -71,7 +71,7 @@ const Game = () => {
             start ? <div className='cards-container'>
                {initialCards.map((card, index) => (
             <div className='card'  onClick={() => handleCardClick(index)} key={index}>
-              card 
+              Touch and Hold to see what's behind
               <div className='pop'>{card}</div>
             </div>
           ))}
