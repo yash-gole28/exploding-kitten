@@ -16,7 +16,7 @@ const Login = () => {
     event.preventDefault()
     try {
       if (userData.email && userData.password) {
-        const response = await axios.post("http://localhost:8000/api/v1/auth/login", { userData })
+        const response = await axios.post("https://exploding-kitten-1.onrender.com/api/v1/auth/login", { userData })
         if (response.data.success) {
           localStorage.setItem('my-token', JSON.stringify(response.data.token))
           localStorage.setItem('game-data', JSON.stringify(response.data.user.gameswon))

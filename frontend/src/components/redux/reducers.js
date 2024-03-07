@@ -28,7 +28,7 @@ const AddWins = async()=>{
     try{
         const gameswon =  JSON.parse(localStorage.getItem("game-data"))
         console.log(gameswon.won)
-      const response = await axios.post('http://localhost:8000/api/v1/game/add-win',{win:gameswon.won,id:gameswon.id})
+      const response = await axios.post('https://exploding-kitten-1.onrender.com/api/v1/game/add-win',{win:gameswon.won,id:gameswon.id})
       if(response.data.success){
         // setGamesWon(response.data.gameswon)
         toast.success("win added")

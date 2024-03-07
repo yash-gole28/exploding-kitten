@@ -4,7 +4,7 @@ export const AddWin = async (req , res) => {
     try{
         const {id ,win} = req.body
         console.log(id)
-        let wins = win + 1
+        let wins = parseInt( win + 1)
         // console.log(wins)
         const data = await UserModel.findByIdAndUpdate(id,{gameswon:wins})
         if(data){

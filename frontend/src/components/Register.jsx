@@ -15,7 +15,7 @@ const Register = () => {
   const handleSubmit = async (event)=>{
       event.preventDefault()
       try{
-          const response = await axios.post("http://localhost:8000/api/v1/auth/register",{userData})
+          const response = await axios.post("https://exploding-kitten-1.onrender.com/api/v1/auth/register",{userData})
           if(response.data.success){
               toast.success('successfully registered')
               setUserData({username:"", email:"",password:""})

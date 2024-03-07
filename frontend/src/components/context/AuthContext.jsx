@@ -47,7 +47,7 @@ const ParentAuthContext = ({children})=>{
     useEffect(()=>{
      async  function currentUser(){
         try{
-            const response = await axios.post('http://localhost:8000/api/v1/auth/currentUser',{token})
+            const response = await axios.post('https://exploding-kitten-1.onrender.com/api/v1/auth/currentUser',{token})
             if(response.data.success){
                 Login(response.data.user)
             
